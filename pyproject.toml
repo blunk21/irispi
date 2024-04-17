@@ -1,0 +1,15 @@
+[tool.poetry]
+name = "iris"
+version = "0.1.0"
+description = "RPI Station for weather data collection and plant irrigation, and maybe some more."
+authors = ["Gergely Bereczki"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.9"
+requests = "^2.31.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
