@@ -1,1 +1,4 @@
 .venv/
+iris_poetry/__pycache__
+iris_poetry/irrigation_manager/__pycache__
+iris_poetry/sensor_data/__pycache__
