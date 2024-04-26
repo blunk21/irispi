@@ -1,7 +1,5 @@
-from .system_config import SystemConfig
+from system_config import SystemConfig
 import os
-import pickle
-
 
 def test_default_cfg_loading():
     curdir = os.path.dirname(__file__)
