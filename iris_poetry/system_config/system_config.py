@@ -53,7 +53,12 @@ class SystemConfig:
         environment = os.getenv("IRIS_ENVIRONMENT")
         headers = {"Content-Type":"application/json"}
         url = "http://" + os.getenv("IRIS_URL_"+environment) + "/configs/" + str(self.config_id) + "/"
-        print(url)
         
         response = requests.request("GET",url=url,headers=headers)
+        if response.status_code != 200:
+            print("Could not get configuration")
+            return
+        content = response.text
+        if content:
+            self._load_config(json.loads(content))
         
