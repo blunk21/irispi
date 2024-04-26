@@ -4,3 +4,4 @@ env/
 **/__pycache__
 iris_poetry/system_config/config.json
 iris_poetry/system_config/config.json
+logs/**
