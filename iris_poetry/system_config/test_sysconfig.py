@@ -21,3 +21,6 @@ def test_config_update_new_config():
     config.update_config()
     assert config.config_id != 0
     os.remove(config_path)
+    
+    
+# TODO: test when config is up to date
