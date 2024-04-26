@@ -6,7 +6,7 @@ import multiprocessing as mp
 logger = mp.get_logger()
 logger.name = "Irrigation"
 
-def irrigation_process(mes_queue: Queue):
+def process_irrigation(mes_queue: Queue):
     while True:
         if not mes_queue.empty():
             print("received ble data")
