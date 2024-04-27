@@ -1,6 +1,7 @@
 from system_config import SystemConfig
 import os
 import logging
+from time import sleep
 
 
 logger: logging.Logger = logging.getLogger("Testing")
@@ -28,6 +29,22 @@ def test_config_update_new_config():
     config.update_config()
     assert config.config_id != 0
     os.remove(config_path)
+    
+def test_config_already_up_to_date():
+    curdir = os.path.dirname(__file__)
+    config_path = os.path.join(curdir, "config.json")
+    if os.path.exists(config_path):
+        os.remove(config_path)
+    config = SystemConfig(logger=logger)
+    
+    assert config.config_id == 0
+    
+    config.update_config()
+    assert config.config_id != 0
+    assert config.update_config() is True
+    
+    
+    
     
     
 # TODO: test when config is up to date
