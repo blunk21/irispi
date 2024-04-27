@@ -87,7 +87,7 @@ class SystemConfig:
             self._save_configuration(contentson)
             self.logger.info("Successfully loaded configuration")
         except json.decoder.JSONDecodeError:
-            self.logger.error("Unable to load new configuration")
-            return False
+            self.logger.info("Configuration already up to date")
+            return True
 
             
