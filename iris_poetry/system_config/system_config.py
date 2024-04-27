@@ -62,7 +62,6 @@ class SystemConfig:
         except KeyError:
             self.logger.error("Failed to read config, unknown key.")
             return 0
-        self._save_configuration(cfg)
         return round(time.time())
 
     def update_config(self) -> bool:
@@ -82,10 +81,13 @@ class SystemConfig:
             self.logger.info(f"Status code:\t{response.status_code}")
             self.logger.info(f"Content:\t{response.text}")
             return False
-        content = response.text
-        if content and self._load_config(json.loads(content)):
+        try:
+            contentson = json.loads(response.text)
+            self._load_config(contentson)
+            self._save_configuration(contentson)
             self.logger.info("Successfully loaded configuration")
-            return True
-        else:
+        except json.decoder.JSONDecodeError:
             self.logger.error("Unable to load new configuration")
             return False
+
+            
