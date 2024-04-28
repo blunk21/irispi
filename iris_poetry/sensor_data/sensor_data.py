@@ -7,7 +7,7 @@ logger = mp.get_logger()
 logger.name = "SensorData"
 
 
-def sensor_data_process(
+def process_sensor_data(
     measurement_queue: Queue,
     freq_queue: Queue,
     measurement_freq: int,

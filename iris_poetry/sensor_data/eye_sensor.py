@@ -17,6 +17,7 @@ logging.root.setLevel(logging.NOTSET)
 logging.basicConfig(level=logging.NOTSET)
 
 logger = logging.getLogger("EyeSensor")
+logger.propagate = False
 
 
 class EyeDelegate(DefaultDelegate):
