@@ -23,7 +23,7 @@ def process_sensor_data(configuration_queue: mp.Queue):
 
     # Initialize sensor and configuration
     sensor = EyeSensor(address="7c:d9:f4:1a:0e:6a", logger=logger)
-    config = SystemConfig()
+    config: SystemConfig = SystemConfig()
     next_measurement_time = time.time()
 
     while True:
@@ -35,11 +35,11 @@ def process_sensor_data(configuration_queue: mp.Queue):
             config = pickle.loads(new_cfg_bytes)
             logger.info("Received new configuration in queue")
             next_measurement_time = (
-                time.time() + config.measurement_frequency
+                time.time() + config.measurement_frequency-sensor.scan_duration
             )  # Reset timer
         except Empty:
             # Timeout reached without receiving new configuration
             if time.time() >= next_measurement_time:
                 mes: BleBeaconData = sensor.get_measurement()
                 logger.info(f"Got measurement: {mes.__dict__}")
-                next_measurement_time += config.measurement_frequency
+                next_measurement_time += config.measurement_frequency-sensor.scan_duration
