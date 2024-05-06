@@ -1,6 +1,6 @@
 import time
 from bluepy.btle import Scanner, DefaultDelegate, ScanEntry
-from typing import Optional, Union
+from typing import Optional
 import logging
 
 
@@ -12,39 +12,38 @@ class BleBeaconData:
     measurement_time: int
 
 
-logging.basicConfig()
-logging.root.setLevel(logging.NOTSET)
-logging.basicConfig(level=logging.NOTSET)
-
-logger = logging.getLogger("EyeSensor")
-logger.propagate = False
-
-
 class EyeDelegate(DefaultDelegate):
-    def __init__(self):
+    def __init__(self, logger=None):
+        self.logger = logger
         DefaultDelegate.__init__(self)
 
     # This method is called whenever a BLE advertisement packet is received
-    def handleDiscovery(self, device, isNewDev, isNewData):
+    def handleDiscovery(self, device: ScanEntry, isNewDev, isNewData):
         if isNewDev:
-            logger.info(f"Discovered device {device.addr}")
+            if self.logger:
+                self.logger.info(f"Discovered device {device.addr}")
         elif isNewData:
-            logger.info(f"Received new data from {device.addr}")
+            if self.logger:
+                self.logger.info(f"Received new data from {device.addr}")
         pass
 
 
 class EyeSensor:
-    def __init__(self, address) -> None:
+    def __init__(
+        self, address, scan_duration: float = 11.0, logger: logging.Logger = None
+    ) -> None:
+        self.logger: logging.Logger = logger
         self.scanner = Scanner().withDelegate(EyeDelegate())
         self.address: str = address
         self.last_measurement: int = 0
+        self.scan_duration: float = scan_duration
 
     def __update_last_measurement(self) -> None:
         self.last_measurement = round(time.time())
 
     def __get_tag_data(self) -> Optional[BleBeaconData]:
-        logger.info("Scanning BLE devices...")
-        devices: list[ScanEntry] = self.scanner.scan(11.0)
+        self.logger.info("Scanning BLE devices...")
+        devices: list[ScanEntry] = self.scanner.scan(self.scan_duration)
         for dev in devices:
             if dev.addr != self.address:
                 continue
@@ -59,7 +58,7 @@ class EyeSensor:
     def get_measurement(self) -> BleBeaconData:
         measurement: BleBeaconData = self.__get_tag_data()
         if measurement is None:
-            logger.warning("Tag not found or no manufacturer data is available")
+            self.logger.warning("Tag not found or no manufacturer data is available")
             return BleBeaconData()
 
         measurement.measurement_time = round(time.time())
