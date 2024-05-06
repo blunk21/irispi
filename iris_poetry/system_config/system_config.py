@@ -90,9 +90,10 @@ class SystemConfig:
             self._save_configuration(contentson)
             if self.logger:
                 self.logger.info("Successfully loaded configuration")
+            return True
         except json.decoder.JSONDecodeError:
             if self.logger:
                 self.logger.info("Configuration already up to date")
-            return True
+            return False
 
             
