@@ -15,7 +15,7 @@ load_dotenv(env_filepath)
 
 
 class SystemConfig:
-    def __init__(self, logger: logging.Logger):
+    def __init__(self, logger: logging.Logger=None):
         self.logger = logger
         self.alarm1: list[int]
         self.alarm2: list[int]
@@ -36,7 +36,8 @@ class SystemConfig:
             fpath = os.path.join(curdir, "default_config.json")
             with open(fpath, "r") as fo:
                 contents = fo.read()
-                self.logger.info("Loading default config.")
+                if self.logger:
+                    self.logger.info("Loading default config.")
             with open(os.path.join(curdir, "config.json"), "w") as fo:
                 fo.write(contents)
         json_cfg = json.loads(contents)
@@ -60,7 +61,8 @@ class SystemConfig:
             self.measurement_frequency = cfg["mes_freq"]
             self.config_id = cfg["id"]
         except KeyError:
-            self.logger.error("Failed to read config, unknown key.")
+            if self.logger:
+                self.logger.error("Failed to read config, unknown key.")
             return 0
         return round(time.time())
 
@@ -77,17 +79,21 @@ class SystemConfig:
 
         response = requests.request("GET", url=url, headers=headers)
         if response.status_code != 200:
-            self.logger.error("Unable to fetch configuration")
-            self.logger.info(f"Status code:\t{response.status_code}")
-            self.logger.info(f"Content:\t{response.text}")
+            if self.logger:
+                self.logger.error("Unable to fetch configuration")
+                self.logger.info(f"Status code:\t{response.status_code}")
+                self.logger.info(f"Content:\t{response.text}")
             return False
         try:
             contentson = json.loads(response.text)
             self._load_config(contentson)
             self._save_configuration(contentson)
-            self.logger.info("Successfully loaded configuration")
-        except json.decoder.JSONDecodeError:
-            self.logger.info("Configuration already up to date")
+            if self.logger:
+                self.logger.info("Successfully loaded configuration")
             return True
+        except json.decoder.JSONDecodeError:
+            if self.logger:
+                self.logger.info("Configuration already up to date")
+            return False
 
             

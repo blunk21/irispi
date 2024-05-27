@@ -5,6 +5,9 @@ import pickle
 import logging
 
 
+CONFIG_CHECK_FREQUENCY = 60
+
+
 def process_configuration_manager(config_queue: mp.Queue):
     process_logger: logging.Logger = logging.getLogger("ConfigManager")
 
@@ -19,7 +22,7 @@ def process_configuration_manager(config_queue: mp.Queue):
 
     while True:
         if config.update_config():
+            pickled_cfg = pickle.dumps(config)
             config_queue.put(pickled_cfg)
             process_logger.info("Put new config into queue")
-        process_logger.info(f"Sleeping for {config.measurement_frequency} seconds.")
-        sleep(config.measurement_frequency)
+        sleep(CONFIG_CHECK_FREQUENCY)
