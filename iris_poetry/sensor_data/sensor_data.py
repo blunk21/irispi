@@ -34,12 +34,12 @@ def process_sensor_data(configuration_queue: mp.Queue):
             )
             config = pickle.loads(new_cfg_bytes)
             logger.info("Received new configuration in queue")
-            next_measurement_time = (
+            next_measurement_time = round(
                 time.time() + config.measurement_frequency-sensor.scan_duration
             )  # Reset timer
         except Empty:
             # Timeout reached without receiving new configuration
-            if time.time() >= next_measurement_time:
+            if round(time.time()) >= next_measurement_time:
                 mes: BleBeaconData = sensor.get_measurement()
                 logger.info(f"Got measurement: {mes.__dict__}")
-                next_measurement_time += config.measurement_frequency-sensor.scan_duration
+                next_measurement_time += config.measurement_frequency 
