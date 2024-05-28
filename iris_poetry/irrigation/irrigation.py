@@ -14,8 +14,8 @@ logger.name = "SensorData"
 
 def process_sensor_data(configuration_queue: mp.Queue):
     # Setup logging
-    logger = logging.getLogger("SensorData")
-    file_handler = logging.FileHandler("logs/process_sensor_data_log.txt")
+    logger = logging.getLogger("Irrigation")
+    file_handler = logging.FileHandler("logs/process_irrigation_log.txt")
     formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
