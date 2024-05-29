@@ -1,5 +1,5 @@
 from multiprocessing import Process, Manager
-from irrigation.irrigation import process_sensor_data
+from irrigation.irrigation import process_irrigation
 
 from system_config.config_manager import process_configuration_manager
 
@@ -13,7 +13,7 @@ if __name__ == "__main__":
         p_configuration = Process(
             target=process_configuration_manager, args=(q_configuration,)
         )
-        p_sensor = Process(target=process_sensor_data, args=(q_configuration,))
+        p_sensor = Process(target=process_irrigation, args=(q_configuration,))
 
         p_configuration.start()
         p_sensor.start()
